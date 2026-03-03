@@ -2,6 +2,7 @@
 using namespace std;
 
 char* readParagraph();
+char** ReadKeywords(int& keywordCount);
 
 //helper functions
 void findWord(char* array, char end[]);
@@ -13,6 +14,8 @@ int main()  {
 
     char end[] = "END";
     char* array = readParagraph();
+
+    int keywordCount = 0;
     //findWord(array, end);
 
     cout << array;
@@ -74,6 +77,48 @@ char* readParagraph()   {
     return paragraph;
 }
 
+char** ReadKeywords(int& keywordCount)  {
+    int dummySize = 20;
+
+    char temp[100];
+    char stop[] = "STOP";
+
+    char** keywords = new char*[dummySize];
+
+    while (cin >> temp) {
+        if (strcmp(temp, stop)) break;
+
+            if(keywordCount  >= dummySize)    {
+                dummySize *= 2;
+
+                char** newArray = new char*[dummySize];
+                for (int j = 0; j < keywordCount; j++)   {      
+                    *(newArray + j) = *(keywords + j);
+                }
+                delete[] keywords;
+
+                keywords = newArray;
+            }
+        *(keywords + keywordCount) = new char[strlen(temp) + 1];
+        strcpy(temp, *(keywords + keywordCount));
+        keywordCount++;
+    }
+    
+    //exact size
+    char** exactSize = new char*[keywordCount];
+    for (int i = 0; i < keywordCount; i++)  {
+        *(exactSize + i) = *(keywords + i);
+    }
+    delete[] keywords;
+
+    keywords = exactSize;
+
+    return keywords;
+
+}
+
+
+//helper functions
 void findWord(char* array, char end[])  {
     int i = 0;
     while (array[i] != '\0')    {
