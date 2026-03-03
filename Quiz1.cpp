@@ -4,6 +4,8 @@ using namespace std;
 char* readParagraph();
 char** ReadKeywords(int& keywordCount);
 void RemoveDuplicateKeywords(char*& paragraph, char** keywords, int keywordCount);
+void displayParagraph(const char* paragraph);
+void DeallocateMemory(char* paragraph, char** keywords, int keywordCount);
 
 //helper functions
 bool strcmp(char str1[], char str2[]);
@@ -11,14 +13,13 @@ void strcpy(char src[], char dest[]);
 int strlen(char str[]);
 
 int main()  {
-
-    char end[] = "END";
-    char* array = readParagraph();
-
+    //test case
     int keywordCount = 0;
-    //findWord(array, end);
-
-    cout << array;
+    char* paragraph = readParagraph();
+    char** keywords = ReadKeywords(keywordCount);
+    RemoveDuplicateKeywords(paragraph, keywords, keywordCount);
+    displayParagraph(paragraph);
+    DeallocateMemory(paragraph, keywords, keywordCount);
 
     return 0;
 }
@@ -163,6 +164,21 @@ void RemoveDuplicateKeywords(char*& paragraph, char** keywords, int keywordCount
         return;
 }
 
+void displayParagraph(const char* paragraph)    {
+    cout << paragraph << endl;
+    return;
+}
+
+void DeallocateMemory(char* paragraph, char** keywords, int keywordCount)   {
+    //deallocate paragraph
+    delete[] paragraph;
+
+    //deallocate keywords
+    for (int i = 0; i < keywordCount; i++)   {
+        delete[] *(keywords + i);
+    }
+    delete[] keywords;
+}
 
 //helper functions
 
