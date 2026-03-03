@@ -3,9 +3,9 @@ using namespace std;
 
 char* readParagraph();
 char** ReadKeywords(int& keywordCount);
+void RemoveDuplicateKeywords(char*& paragraph, char** keywords, int keywordCount);
 
 //helper functions
-void findWord(char* array, char end[]);
 bool strcmp(char str1[], char str2[]);
 void strcpy(char src[], char dest[]);
 int strlen(char str[]);
@@ -117,27 +117,54 @@ char** ReadKeywords(int& keywordCount)  {
 
 }
 
+void RemoveDuplicateKeywords(char*& paragraph, char** keywords, int keywordCount)   {
+
+    for (int i = 0; i < keywordCount; i++)  {
+        bool firstFound = false;
+        int j = 0;
+        while (paragraph[j] != '\0')    {
+            int wordStart = j; //store before extracting
+            char temp[100];
+            int k = 0;
+            while (paragraph[j] != ' ' && paragraph[j] != '\0') {
+                temp[k++] = paragraph[j++];
+            }
+            temp[k] = '\0';
+
+            if (strcmp(temp, *(keywords + i)) && !firstFound) {
+                firstFound = true;
+                if (*(paragraph + j) == ' ') j++;
+            }
+            else if (strcmp(temp, *(keywords + i)) && firstFound)   {
+                int wordEnd = j;
+                if (*(paragraph + wordEnd) == ' ') wordEnd++;
+
+                int s = wordStart;
+                while (*(paragraph + wordEnd) != '\0') {
+                    *(paragraph + s) = *(paragraph + wordEnd);
+                    s++;
+                    wordEnd++;
+                }
+                *(paragraph + s) = '\0';
+                j = wordStart;
+            }
+            else
+                if (*(paragraph + j) == ' ') j++;
+        }
+    }
+    int len = strlen(paragraph);
+
+        char* exactSize = new char[len + 1];
+        strcpy(paragraph, exactSize);
+
+        delete[] paragraph;
+        paragraph = exactSize;
+
+        return;
+}
+
 
 //helper functions
-void findWord(char* array, char end[])  {
-    int i = 0;
-    while (array[i] != '\0')    {
-        char temp[101];
-        int j = 0;
-
-        while (array[i] != ' ' && array[i] != '\0') {
-            temp[j++] = array[i++];
-        }
-        temp[j] = '\0';
-
-        if (strcmp(temp, end)) {
-            i-=4;
-            array[i] = '\0';
-            return;
-        }
-        if (array[i] == ' ') i++;
-    }
-}
 
 bool strcmp(char str1[], char str2[])   {
     int i = 0;
